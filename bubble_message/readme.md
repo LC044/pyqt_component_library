@@ -1,9 +1,12 @@
 # Pyqt实现微信气泡消息
 
-特性：
-1. 自适应大小、支持缩放
-2. 支持图片显示
-3. 支持更换头像
+最近在做一个[微信数据库备份](https://github.com/LC044/WeChatMsg)的项目，想做个界面展示聊天记录，奈何一直没有找到用pyqt实现的类似微信的聊天界面，于是就想着自己做一个。
+
+## 特性
+
+1. 自适应大小、支持缩放: 通过重写QLabel并添加合适的布局，实现消息框的自适应大小，并支持缩放。
+2. 支持图片显示: 项目支持在聊天框中显示图片消息，为用户提供更加丰富的聊天体验。
+3. 支持更换头像: 用户可以轻松更换头像，个性化定制聊天界面。
 
 效果
 
@@ -11,11 +14,13 @@
 
 ## 实现原理，重写QLabel，添加布局
 
-聊天框由四部分组成，最左侧是图像，右边是聊天内容，中间绘制一个三角形指向头像，最右侧放置一个弹簧控件来调整消息的长度
+### 聊天框布局
+聊天框由四部分组成：最左侧是头像，右侧是聊天内容，中间绘制一个三角形指向头像，最右侧放置一个弹簧控件来调整消息的长度。
 
 ![布局](./data/layout.png)
 
-* 头像的实现
+### 头像的实现
+头像通过继承QLabel实现，用户可以传入头像路径或QPixmap对象。头像会根据需要进行缩放，并设置固定的大小。
 
 ```python
 class Avatar(QLabel):
@@ -28,9 +33,8 @@ class Avatar(QLabel):
             self.setPixmap(avatar.scaled(45, 45))
         self.setFixedSize(QSize(45, 45))
 ```
-* 绘制三角形
-
-发送消息绘制右三角，接收消息绘制左三角
+### 绘制三角形
+通过继承QLabel实现一个三角形，用于指向头像的方向。根据消息是发送还是接收，绘制不同方向的三角形。
 
 ```python
 class Triangle(QLabel):
@@ -56,7 +60,8 @@ class Triangle(QLabel):
             painter.drawPolygon(triangle)
 ```
 
-* 文字消息控件
+### 文字消息控件
+通过继承QLabel实现文字消息控件，支持自动换行、文字选择和不同样式的边框。
 
 ```python
 class TextMessage(QLabel):
@@ -116,7 +121,9 @@ class TextMessage(QLabel):
 }
 ```
 
-* 最后再设置一个布局，将三个元素添加进来
+### 聊天框组件
+
+最后，将头像、三角形和消息控件组合在一起，通过水平布局排列，形成完整的聊天框组件。
 
 ```python
 class BubbleMessage(QWidget):
@@ -161,3 +168,10 @@ class BubbleMessage(QWidget):
 
 ![](./data/demo.png)
 
+应用到项目中去:[微信聊天记录备份](https://github.com/LC044/WeChatMsg)
+
+![](./data/chat_.png)
+
+# 开源地址
+
+[https://github.com/LC044/pyqt_component_library](https://github.com/LC044/pyqt_component_library)
