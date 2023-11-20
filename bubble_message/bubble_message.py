@@ -1,13 +1,13 @@
 from PIL import Image
 from PyQt5 import QtGui
 from PyQt5.QtCore import QSize, pyqtSignal, Qt, QThread
-from PyQt5.QtGui import QPainter, QFont, QColor, QPixmap, QPolygon
+from PyQt5.QtGui import QPainter, QFont, QColor, QPixmap, QPolygon, QFontMetrics
 from PyQt5.QtWidgets import QWidget, QLabel, QHBoxLayout, QSizePolicy, QVBoxLayout, QSpacerItem, \
     QScrollArea, QScrollBar
-from enum import Enum
 
 
-class MessageType(Enum):
+
+class MessageType:
     Text = 1
     Image = 2
 
@@ -17,12 +17,12 @@ class TextMessage(QLabel):
 
     def __init__(self, text, is_send=False, parent=None):
         super(TextMessage, self).__init__(text, parent)
-        self.setFont(QFont('微软雅黑', 12))
+        font = QFont('微软雅黑', 12)
+        self.setFont(font)
         self.setWordWrap(True)
         self.setMaximumWidth(800)
         self.setMinimumWidth(100)
         self.setMinimumHeight(45)
-
         self.setTextInteractionFlags(Qt.TextSelectableByMouse)
         self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
         if is_send:
@@ -31,10 +31,7 @@ class TextMessage(QLabel):
                 '''
                 background-color:#b2e281;
                 border-radius:10px;
-                border-top: 10px solid #b2e281;
-                border-bottom: 10px solid #b2e281;
-                border-right: 10px solid #b2e281;
-                border-left: 10px solid #b2e281;
+                padding:10px;
                 '''
             )
         else:
@@ -42,15 +39,13 @@ class TextMessage(QLabel):
                 '''
                 background-color:white;
                 border-radius:10px;
-                border-top: 10px solid white;
-                border-bottom: 10px solid white;
-                border-right: 10px solid white;
-                border-left: 10px solid white;
+                padding:10px;
                 '''
             )
-        w = len(text) * 16 + 30
-        if w < self.width():
-            self.setMaximumWidth(w)
+        font_metrics = QFontMetrics(font)
+        rect = font_metrics.boundingRect(text)
+        self.setMaximumWidth(rect.width()+30)
+
 
     def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
         super(TextMessage, self).paintEvent(a0)
@@ -71,11 +66,11 @@ class Triangle(QLabel):
             if self.is_send:
                 painter.setPen(QColor('#b2e281'))
                 painter.setBrush(QColor('#b2e281'))
-                triangle.setPoints(0, 20, 0, 35, 6, 25)
+                triangle.setPoints(0, 20, 0, 34, 6, 27)
             else:
                 painter.setPen(QColor('white'))
                 painter.setBrush(QColor('white'))
-                triangle.setPoints(0, 25, 6, 20, 6, 35)
+                triangle.setPoints(0, 27, 6, 20, 6, 34)
             painter.drawPolygon(triangle)
 
 

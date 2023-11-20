@@ -52,11 +52,11 @@ class Triangle(QLabel):
             if self.is_send:
                 painter.setPen(QColor('#b2e281'))
                 painter.setBrush(QColor('#b2e281'))
-                triangle.setPoints(0, 20, 0, 35, 6, 25)
+                triangle.setPoints(0, 20, 0, 35, 6, 27)
             else:
                 painter.setPen(QColor('white'))
                 painter.setBrush(QColor('white'))
-                triangle.setPoints(0, 25, 6, 20, 6, 35)
+                triangle.setPoints(0, 27, 6, 20, 6, 35)
             painter.drawPolygon(triangle)
 ```
 
@@ -69,12 +69,12 @@ class TextMessage(QLabel):
 
     def __init__(self, text, is_send=False, parent=None):
         super(TextMessage, self).__init__(text, parent)
-        self.setFont(QFont('微软雅黑', 12))
+        font = QFont('微软雅黑', 12)
+        self.setFont(font)
         self.setWordWrap(True)
         self.setMaximumWidth(800)
         self.setMinimumWidth(100)
         self.setMinimumHeight(45)
-
         self.setTextInteractionFlags(Qt.TextSelectableByMouse)
         self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
         if is_send:
@@ -83,10 +83,7 @@ class TextMessage(QLabel):
                 '''
                 background-color:#b2e281;
                 border-radius:10px;
-                border-top: 10px solid #b2e281;
-                border-bottom: 10px solid #b2e281;
-                border-right: 10px solid #b2e281;
-                border-left: 10px solid #b2e281;
+                padding:10px;
                 '''
             )
         else:
@@ -94,30 +91,21 @@ class TextMessage(QLabel):
                 '''
                 background-color:white;
                 border-radius:10px;
-                border-top: 10px solid white;
-                border-bottom: 10px solid white;
-                border-right: 10px solid white;
-                border-left: 10px solid white;
+                padding:10px;
                 '''
             )
-        w = len(text) * 16 + 30
-        if w < self.width():
-            self.setMaximumWidth(w)
-
-    def paintEvent(self, a0: QtGui.QPaintEvent) -> None:
-        super(TextMessage, self).paintEvent(a0)
+        font_metrics = QFontMetrics(font)
+        rect = font_metrics.boundingRect(text)
+        self.setMaximumWidth(rect.width()+30)
 ```
 
 核心是边框样式的设置，self.setWordWrap(True)设置文字自动换行，self.setTextInteractionFlags(Qt.TextSelectableByMouse)设置文字可选中，self.setAlignment(Qt.AlignCenter | Qt.AlignRight)设置文字对齐方式
 
 ```css
 {
-    background-color:#b2e281; // 边框颜色
-    border-radius:10px;  // 边框圆角半径
-    border-top: 10px solid #b2e281; // 各边框宽度颜色
-    border-bottom: 10px solid #b2e281;
-    border-right: 10px solid #b2e281;
-    border-left: 10px solid #b2e281;
+   background-color:#b2e281;
+   border-radius:10px;
+   padding:10px;
 }
 ```
 
